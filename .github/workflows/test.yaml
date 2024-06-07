@@ -1,0 +1,32 @@
+name: To create Build and Deploy to GKE of google cloud project (only for dev environment)
+on:
+  workflow_dispatch:
+    inputs:
+      namespace:
+        description: "Namespace to apply the changes"
+        default: "none"
+        type: choice
+        required: true
+        options:
+          - "dev"
+          - "sit"
+          - "prod"
+
+jobs:
+  maven-build:
+    name: Run and generate Maven build
+    runs-on: ubuntu-latest
+    outputs:
+      sampleOutput: "test value"
+    steps:
+      - name: repo/checkout
+        uses: actions/checkout@v2
+        # with:
+        #   token: ${{ secrets.BUILD_TOKEN }} 
+    
+
+  # docker-bbuild-push:
+
+
+  # gke-deployment:
+  
