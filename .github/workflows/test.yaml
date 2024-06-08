@@ -26,9 +26,23 @@ jobs:
       - name: Get Branch details
         id: branch_name
         run: |
-          branch="${{ github.base_ref }}"
+          branch="${{ github.ref }}"
           echo "branch="$branch >> $GITHUB_OUTPUT
           echo $branch
+
+      - id: GCP Auth
+        name: GCP Authentication step
+        uses: google-github-actions/auth@v1.1.1
+        with:
+          project_id: "steam-bee-424712-d7"
+          # workload_identitity_provider: ${{  }}
+          service_account: ${{ secrets.GCP_SA_PIPELINE }}
+
+      - name: maven_build
+        shell: bash
+        run: |
+          mvn clean deploy
+          
   # docker-bbuild-push:
 
 
