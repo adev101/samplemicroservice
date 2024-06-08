@@ -30,8 +30,8 @@ jobs:
           echo "branch="$branch >> $GITHUB_OUTPUT
           echo $branch
 
-      - id: GCP Auth
-        name: GCP Authentication step
+      - name: GCP Authentication step
+        id: GCP Auth      
         uses: google-github-actions/auth@v1.1.1
         with:
           project_id: "steam-bee-424712-d7"
