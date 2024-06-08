@@ -26,7 +26,7 @@ jobs:
       - name: Get Branch details
         id: branch_name
         run: |
-          branch = "${{ github.branch_ref }}"
+          branch = "${{ github.ref }}"
           echo "branch="$branch >> $GITHUB_OUTPUT
           echo $branch
   # docker-bbuild-push:
