@@ -8,9 +8,8 @@ on:
         type: choice
         required: true
         options:
-          - "dev"
-          - "sit"
-          - "prod"
+          - "dev1"
+          - "dev2"
 
 jobs:
   maven-build:
@@ -23,8 +22,13 @@ jobs:
         uses: actions/checkout@v2
         # with:
         #   token: ${{ secrets.BUILD_TOKEN }} 
-    
 
+      - name: Get Branch details
+        id: branch_name
+        run: |
+          branch = "${{ github.branch_ref }}"
+          echo "branch="$branch >> $GITHUB_OUTPUT
+          echo $branch
   # docker-bbuild-push:
 
 
