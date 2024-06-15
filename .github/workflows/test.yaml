@@ -11,8 +11,16 @@ on:
           - "dev1"
           - "dev2"
 
+env:
+  IMAGE_NAME: 'sample-microservice-image'
+  PROJECT_ID: 'steam-bee-424712-d7'
+  AR_REPO_LOCATION: 'us-central1'
+  AR_URL: 'us-central1-docker.pkg.dev/steam-bee-424712-d7/my-ar-repo'
+  SERVICE_ACCOUNT: 'github-sa-registry-admin-ag@steam-bee-424712-d7.iam.gserviceaccount.com' 
+  WORKLOAD_IDENTITY_PROVIDER: 'test'
+
 jobs:
-  maven-build:
+  maven-build-registry-push:
     name: Run and generate Maven build
     runs-on: ubuntu-latest
     outputs:
@@ -33,16 +41,28 @@ jobs:
       - name: GCP Authentication step     
         uses: google-github-actions/auth@v1.1.1
         with:
-          project_id: "steam-bee-424712-d7"
-          # workload_identitity_provider: ${{  }}
-          service_account: ${{ secrets.GCP_SA_PIPELINE }}
+          token_format: 'access_token'
+          project_id: ${{ env.PROJECT_ID }}
+          workload_identitity_provider: ${{ env.WORKLOAD_IDENTITY_PROVIDER }}
+          service_account: ${{ env.SERVICE_ACCOUNT }}
 
       - name: maven_build
         shell: bash
         run: |
           mvn clean deploy
           
-  # docker-bbuild-push:
+      - name: Docker Auth
+        id: docker-auth
+        uses: 'docker/login-action@v1'
+        with:
+          username: 'oauth2accesstoken'
+          password: '${{ steps.auth.outputs.access_token }}'
+          registry: '${{ env.AR_REPO_LOCATION }}-docker.pkg.dev'
+
+      - name: Build and Push Container
+        run: |-
+          docker build -t "${{ env.AR_URL }}/${{ env.IMAGE_NAME }}:${{ github.sha }}" ./
+          docker push "${{ env.AR_URL }}/${{ env.IMAGE_NAME }}:${{ github.sha }}"
 
 
   # gke-deployment:
